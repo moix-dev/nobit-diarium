@@ -1,16 +1,19 @@
 module Lib where
 
-data Naturaleza = Debit | Credit | Nobit
-  deriving (Show)
+-- /corpus/2025.08.26.md
+data Nature = NobitPositive | NobitNegative | Debit | Credit
+  deriving (Eq, Show)
 
-data LibroMayor
-  deriving (Show)
+data Account
 
-data LibroDiario
-  deriving (Show)
+data Entry
 
-data Asiento
-  deriving (Show)
+data DiaryBook
 
-data Cuenta
-  deriving (Show)
+data MajorBook
+
+nature bits = case bits of
+  00 -> show NobitPositive
+  01 -> show NobitNegative
+  10 -> show Debit
+  11 -> show Credit
