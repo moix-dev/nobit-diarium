@@ -3,7 +3,10 @@ name: nobit
 version: 0.1
 
 library
-  exposed-modules: Lib
+  exposed-modules: Nobit
+  other-modules: 
+    Nobit.Nature 
+    Nobit.Element
   hs-source-dirs: src
   default-language: Haskell2010
   build-depends: base
