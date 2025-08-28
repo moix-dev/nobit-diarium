@@ -10,9 +10,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up GHC and Cabal
-        uses: haskell/actions/setup@v2
+      - uses: haskell/ghcup-setup@v1
 
       - name: Update package index
         run: cabal update

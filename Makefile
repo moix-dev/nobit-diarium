@@ -1,2 +1,0 @@
-all:
-	@echo "cabal [option]"
