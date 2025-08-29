@@ -1,11 +1,12 @@
-module Nobit.Nature (nature) where
+module Nobit.Nature (nature, Nature(..)) where
 
 -- /corpus/2025.08.26.md
 data Nature = NobitPositive | NobitNegative | Debit | Credit
   deriving (Eq, Show)
 
-nature bits = case bits of
-  00 -> show NobitPositive
-  01 -> show NobitNegative
-  10 -> show Debit
-  11 -> show Credit
+nature :: Int -> Int -> Nature
+nature s n = case [s,n] of
+  [0,0] -> NobitPositive
+  [0,1] -> NobitNegative
+  [1,0] -> Debit
+  [1,1] -> Credit

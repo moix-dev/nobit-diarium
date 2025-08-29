@@ -1,10 +1,4 @@
-module Nobit (nature, element) where
+module Nobit (element, Element(..), nature, Nature(..)) where
 
-import Nobit.Element (element)
-import Nobit.Nature (nature)
-
-data Entry
-
-data DiaryBook
-
-data MajorBook
+import Nobit.Element (element, Element(..))
+import Nobit.Nature (nature, Nature(..))
