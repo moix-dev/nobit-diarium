@@ -1,4 +1,8 @@
 module Main where
 
+import Nobit
+
 main :: IO ()
-main = putStrLn "Nobit"
+main = do
+    journal <- loadFromData "data/data.test.txt"
+    print journal

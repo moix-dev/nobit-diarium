@@ -1,0 +1,28 @@
+name: Paper CI
+
+on:
+  push: 
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: moix-dev/paper-template@v1
+        with:
+            path: "paper/paper.txt"
+
+      - name: Create or update release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          release_name: "Latest Release"
+          draft: false
+          prerelease: false
+          files: ./paper.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
