@@ -9,5 +9,7 @@ import Nobit
 main :: IO ()
 main = do
   conn <- open "data/test.sqlite"
-  [[x :: Int]] <- query_ conn "SELECT 2 + 2"
+  journal <- withJournal conn 2025
+  [[x :: Int]] <- query_ conn "SELECT 1 + 2"
   print x
+  close conn

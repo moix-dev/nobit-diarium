@@ -29,6 +29,6 @@ test-suite nobit-test
   build-depends:
     base,
     nobit,
-    sqlite-simple,
     tasty,
     tasty-hunit,
+    sqlite-simple,

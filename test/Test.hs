@@ -6,11 +6,17 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 main :: IO ()
-main = defaultMain tests
+main = do
+  conn <- open "data/test.sqlite"
+  defaultMain (tests conn)
+  close conn
 
-tests :: TestTree
-tests =
+tests :: Connection -> TestTree
+tests conn =
   testGroup
     "Tests"
-    [ testCase "OK" $ True @?= True
+    [ testCase "OK" $ True @?= True,
+      testCase "Journal 2025" $ do
+        journal <- withJournal conn 2025
+        "Journal_2025" @?= journal
     ]
