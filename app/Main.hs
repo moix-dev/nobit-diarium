@@ -1,8 +1,13 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Main where
 
+import Database.SQLite.Simple
 import Nobit
 
 main :: IO ()
 main = do
-    journal <- loadFromData "data/data.test.txt"
-    print journal
+  conn <- open "data/test.sqlite"
+  [[x :: Int]] <- query_ conn "SELECT 2 + 2"
+  print x
