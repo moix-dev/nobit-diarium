@@ -19,4 +19,4 @@ jobs:
           v up
       
       - name: Run tests
-        run: v test .
+        run: v test src
