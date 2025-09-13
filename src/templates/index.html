@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nobit Diarium</title>
+    <style>
+        blockquote {
+            font-size: small;
+            margin: 2px;
+            border-left: 2px solid;
+            padding-left: 5px;
+        }
+
+        .flex {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        table thead {
+            background-color: silver;
+        }
+    </style>
+</head>
+
+<body class="flex">
+    <form style="width: 30%;" onsubmit="return false;">
+        <fieldset>
+            <legend>LIBRO DIARIO</legend>
+            <select name="journal_period">
+                <option value="">Sin listar</option>
+            </select>
+            <button type="button" onclick="listJournals(this)">Listar</button>
+            <button type="button" onclick="listRows(this)">Obtener Registros</button>
+            <blockquote>Almacenamiento de toda actividad en una sola tabla SQL.</blockquote>
+        </fieldset>
+        <fieldset>
+            <legend>ASIENTO</legend>
+            <div class="flex">
+                <input type="text" name="entry_id" placeholder="entry_id" required>
+                <button type="button" onclick="newEntryId(this)">Generar</button>
+                <button type="button" onclick="getEntryId(this)">Obtener</button>
+            </div>
+            <blockquote>Identificador del grupo de registros.</blockquote>
+        </fieldset>
+        <fieldset>
+            <legend>REGISTRO</legend>
+            <input type="text" name="account" placeholder="account" required>
+            <div class="flex">
+                <label>
+                    <input type="radio" name="nature" value="-1">
+                    Izquierda
+                </label>
+                <label>
+                    <input type="radio" name="nature" value="0" required>
+                    Centro
+                </label>
+                <label>
+                    <input type="radio" name="nature" value="0">
+                    Derecha
+                </label>
+            </div>
+            <input type="number" name="amount" min="1.0" placeholder="amount" required>
+            <p>
+                <button type="button" onclick="addRow(this)">Guardar información permanente</button>
+            </p>
+            <blockquote>Información inmutable del registro.</blockquote>
+        </fieldset>
+        <fieldset>
+            <legend>REGISTRO REFERENTE</legend>
+            <input type="text" name="entry_ref" placeholder="entry_ref">
+            <button type="button" onclick="setEntryRef(this)">Actualizar</button>
+            <blockquote>Referencia a un grupo para complementar información.</blockquote>
+        </fieldset>
+        <fieldset>
+            <legend>REGISTRO INFO</legend>
+            <div class="flex">
+                <input type="text" name="data_key" list="data_keys" placeholder="data_key">
+                <datalist id="data_keys"></datalist>
+                <button type="button" onclick="getRowData(this)">Obtener</button>
+            </div>
+            <textarea name="data_value" rows="3" placeholder="data_value"></textarea>
+            <p>
+                <button type="button" onclick="setRowData(this)">Guardar información</button>
+            </p>
+            <blockquote>Información mutable del registro.</blockquote>
+        </fieldset>
+    </form>
+    <table style="width: 70%;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ENTRY_ID</th>
+                <th>ACCOUNT</th>
+                <th>NATURE</th>
+                <th>AMOUNT</th>
+                <th>ENTRY_REF</th>
+                <th>DATA</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        function listJournals(btn) {
+            const form = btn.closest('form');
+            console.log(form)
+        }
+    </script>
+</body>
+
+</html>

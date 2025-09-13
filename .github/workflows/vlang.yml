@@ -1,0 +1,22 @@
+name: Vlang CI
+
+on:
+  push: 
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install V
+        run: |
+          curl -LO https://github.com/vlang/v/releases/latest/download/v_linux.zip
+          unzip v_linux.zip
+          sudo ./v/v symlink
+          v up
+      
+      - name: Run tests
+        run: v test .
