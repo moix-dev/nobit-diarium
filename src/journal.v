@@ -10,7 +10,7 @@ fn create_journal(db sqlite.DB, period int) bool {
 			entry_id TEXT NOT NULL,
 			account TEXT NOT NULL,
 			nature INTEGER NOT NULL CHECK(nature BETWEEN -1 AND 1),
-			amount NUMERAL NOT NULL CHECK(amount > 0),
+			amount REAL NOT NULL CHECK(amount > 0),
 			entry_ref TEXT,
 			__data TEXT
 		);

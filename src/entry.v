@@ -1,13 +1,10 @@
 import veb
 import db.sqlite
 
-fn new_entry_id(db sqlite.DB, size int) ?string {
+fn new_entry_id(db sqlite.DB, size int) !string {
 	row := db.exec_one('
 		SELECT hex(randomblob(${size / 2})) AS entry_id;
-	') or {
-		println('Error SQL: ${err}')
-		return none
-	}
+	')!
 	return row.vals[0]
 }
 

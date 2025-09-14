@@ -18,8 +18,16 @@
             align-items: flex-start;
         }
 
-        table thead {
-            background-color: silver;
+        table {
+            width: 100%;
+
+            thead {
+                background-color: silver;
+            }
+
+            td {
+                text-align: right;
+            }
         }
     </style>
 </head>
@@ -28,32 +36,32 @@
     <form style="width: 30%;" onsubmit="return false;">
         <fieldset>
             <legend>LIBRO DIARIO</legend>
-            <select name="journal_period">
+            <select name="journal_name">
                 <option value="">Sin listar</option>
             </select>
             <button type="button" onclick="listJournals(this)">Listar</button>
-            <button type="button" onclick="listRows(this)">Obtener Registros</button>
+            <button type="button" onclick="listRows(this)">Obtener registros</button>
             <blockquote>Almacenamiento de toda actividad en una sola tabla SQL.</blockquote>
         </fieldset>
         <fieldset>
             <legend>ASIENTO</legend>
             <div class="flex">
-                <input type="text" name="entry_id" placeholder="entry_id" required>
+                <input type="text" name="entry_id" placeholder="entry_id">
                 <button type="button" onclick="newEntryId(this)">Generar</button>
-                <button type="button" onclick="getEntryId(this)">Obtener</button>
+                <button type="button" onclick="listEntryId(this)">Filtrar</button>
             </div>
             <blockquote>Identificador del grupo de registros.</blockquote>
         </fieldset>
         <fieldset>
             <legend>REGISTRO</legend>
-            <input type="text" name="account" placeholder="account" required>
+            <input type="text" name="account" placeholder="account">
             <div class="flex">
                 <label>
                     <input type="radio" name="nature" value="-1">
                     Izquierda
                 </label>
                 <label>
-                    <input type="radio" name="nature" value="0" required>
+                    <input type="radio" name="nature" value="0">
                     Centro
                 </label>
                 <label>
@@ -61,7 +69,7 @@
                     Derecha
                 </label>
             </div>
-            <input type="number" name="amount" min="1.0" placeholder="amount" required>
+            <input type="number" name="amount" min="1.0" placeholder="amount" step="0.1">
             <p>
                 <button type="button" onclick="addRow(this)">Guardar información permanente</button>
             </p>
@@ -75,11 +83,14 @@
         </fieldset>
         <fieldset>
             <legend>REGISTRO INFO</legend>
-            <div class="flex">
+            <p>
+                <input type="number" name="row_id" min="1" placeholder="row_id">
+            </p>
+            <p class="flex">
                 <input type="text" name="data_key" list="data_keys" placeholder="data_key">
                 <datalist id="data_keys"></datalist>
                 <button type="button" onclick="getRowData(this)">Obtener</button>
-            </div>
+            </p>
             <textarea name="data_value" rows="3" placeholder="data_value"></textarea>
             <p>
                 <button type="button" onclick="setRowData(this)">Guardar información</button>
@@ -87,34 +98,74 @@
             <blockquote>Información mutable del registro.</blockquote>
         </fieldset>
     </form>
-    <table style="width: 70%;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>ENTRY_ID</th>
-                <th>ACCOUNT</th>
-                <th>NATURE</th>
-                <th>AMOUNT</th>
-                <th>ENTRY_REF</th>
-                <th>DATA</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div style="width: 70%;">
+        <table id="view-rows">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ENTRY_ID</th>
+                    <th>ACCOUNT</th>
+                    <th>NATURE</th>
+                    <th>AMOUNT</th>
+                    <th>ENTRY_REF</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
     <script>
         async function getData(btn, fn, uri) {
             const res = await fetch(uri);
             if (!res.ok) throw new Error('Error HTTP: ' + res.statusText);
             return [btn.closest('form'), await res[fn]()]
         }
+        async function setData(fn, uri, data) {
+            const res = await fetch(uri, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            if (!res.ok) throw new Error('Error HTTP: ' + res.statusText);
+            return await res[fn]()
+        }
+        function forTable(data) {
+            return data.map(x =>
+                '<tr>' + x.map(y => '<td>' + y + '</td>').join('') + '</tr>'
+            ).join('');
+        }
         async function listJournals(btn) {
             const [form, data] = await getData(btn, 'json', '/api/journals');
             const html_data = data.map(x => '<option value="' + x + '">' + x + '</option>').join('');
-            form.querySelector('select[name="journal_period"]').innerHTML = html_data;
+            form.querySelector('select[name="journal_name"]').innerHTML = html_data;
         }
         async function newEntryId(btn) {
             const [form, data] = await getData(btn, 'text', '/api/entry_id')
             form.entry_id.value = data;
+        }
+        async function addRow(btn) {
+            const form = btn.closest('form');
+            const journal_name = form.journal_name.value;
+            const row = {
+                entry_id: form.entry_id.value,
+                account: form.account.value,
+                nature: parseInt(form.nature.value),
+                amount: parseFloat(form.amount.value)
+            };
+            form.row_id.value = await setData('text', '/api/' + journal_name + '/row', row);
+        }
+        async function listRows(btn) {
+            const journal_name = btn.closest('form').journal_name.value;
+            const [_, data] = await getData(btn, 'json', '/api/' + journal_name + '/rows');
+            document.querySelector('#view-rows>tbody').innerHTML = forTable(data);
+        }
+        async function listEntryId(btn) {
+            const form = btn.closest('form');
+            const journal_name = form.journal_name.value;
+            const entry_id = form.entry_id.value;
+            const [_, data] = await getData(btn, 'json', '/api/' + journal_name + '/entry/' + entry_id);
+            document.querySelector('#view-rows>tbody').innerHTML = forTable(data);
         }
     </script>
 </body>
