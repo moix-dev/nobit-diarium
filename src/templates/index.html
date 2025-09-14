@@ -102,22 +102,19 @@
         <tbody></tbody>
     </table>
     <script>
-        async function getData(btn, uri) {
+        async function getData(btn, fn, uri) {
             const res = await fetch(uri);
-            if (res.status != 200) return false;
-            return [btn.closest('form'), await res.json()]
+            if (!res.ok) throw new Error('Error HTTP: ' + res.statusText);
+            return [btn.closest('form'), await res[fn]()]
         }
         async function listJournals(btn) {
-            const [form, data] = await getData(btn, '/api/journals');
-            if (!data) return false;
+            const [form, data] = await getData(btn, 'json', '/api/journals');
             const html_data = data.map(x => '<option value="' + x + '">' + x + '</option>').join('');
-            const select = form.querySelector('select[name="journal_period"]');
-            select.innerHTML = html_data;
+            form.querySelector('select[name="journal_period"]').innerHTML = html_data;
         }
-        async function listRows(btn) {
-            const [form, data] = await getData(btn, '/api/rows')
-            if (!data) return false;
-            console.log(form, data)
+        async function newEntryId(btn) {
+            const [form, data] = await getData(btn, 'text', '/api/entry_id')
+            form.entry_id.value = data;
         }
     </script>
 </body>
