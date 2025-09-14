@@ -10,3 +10,5 @@ CREATE TABLE IF NOT EXISTS "Journal" (
     entry_ref TEXT,
     __data TEXT -- json data
 );
+
+-- SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'Journal_%';

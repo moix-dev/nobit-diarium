@@ -1,23 +1,21 @@
 module main
 
 import veb
+import db.sqlite
 
 pub struct App {
 mut:
-	state shared State
+	db sqlite.DB
 }
 
 pub struct Context {
 	veb.Context
 }
 
-struct State {
-mut:
-	cnt int
-}
-
 fn main() {
-	mut app := &App{}
+	mut app := &App{
+		db: sqlite.connect('data/test.sqlite') or { panic(err) }
+	}
 	veb.run_at[App, Context](mut app) or { panic(err) }
 }
 

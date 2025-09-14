@@ -102,9 +102,22 @@
         <tbody></tbody>
     </table>
     <script>
-        function listJournals(btn) {
-            const form = btn.closest('form');
-            console.log(form)
+        async function getData(btn, uri) {
+            const res = await fetch(uri);
+            if (res.status != 200) return false;
+            return [btn.closest('form'), await res.json()]
+        }
+        async function listJournals(btn) {
+            const [form, data] = await getData(btn, '/api/journals');
+            if (!data) return false;
+            const html_data = data.map(x => '<option value="' + x + '">' + x + '</option>').join('');
+            const select = form.querySelector('select[name="journal_period"]');
+            select.innerHTML = html_data;
+        }
+        async function listRows(btn) {
+            const [form, data] = await getData(btn, '/api/rows')
+            if (!data) return false;
+            console.log(form, data)
         }
     </script>
 </body>
