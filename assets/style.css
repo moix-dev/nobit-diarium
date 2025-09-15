@@ -1,0 +1,24 @@
+blockquote {
+    font-size: small;
+    margin: 2px;
+    border-left: 2px solid;
+    padding-left: 5px;
+}
+
+.flex {
+    gap: 0.3em;
+    display: flex;
+    align-items: flex-start;
+}
+
+table {
+    width: 100%;
+
+    thead {
+        background-color: silver;
+    }
+
+    td {
+        text-align: right;
+    }
+}

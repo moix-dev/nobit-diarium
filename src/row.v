@@ -2,8 +2,6 @@ import veb
 import db.sqlite
 import json
 
-type Data = map[string]string
-
 struct Row {
 	entry_id  string
 	account   string

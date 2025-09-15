@@ -5,32 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nobit Diarium</title>
-    <style>
-        blockquote {
-            font-size: small;
-            margin: 2px;
-            border-left: 2px solid;
-            padding-left: 5px;
-        }
-
-        .flex {
-            gap: 0.3em;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        table {
-            width: 100%;
-
-            thead {
-                background-color: silver;
-            }
-
-            td {
-                text-align: right;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="shortcut icon" href="/assets/icon.svg" type="image/svg+xml">
 </head>
 
 <body class="flex">
@@ -82,7 +58,7 @@
             <legend>REGISTRO INFO</legend>
             <p class="flex">
                 <input type="number" name="row_id" min="1" placeholder="row_id">
-                <button type="button" onclick="listData(this)">Listar</button>
+                <button type="button" onclick="listData(this)">Listar data</button>
             </p>
             <div class="flex">
                 <input type="text" name="entry_ref" placeholder="entry_ref">
@@ -126,61 +102,7 @@
             <tbody></tbody>
         </table>
     </div>
-    <script>
-        async function getJson(btn, fn, uri) {
-            const res = await fetch(uri);
-            if (!res.ok) throw new Error('Error HTTP: ' + res.statusText);
-            return [btn.closest('form'), await res[fn]()]
-        }
-        async function setJson(fn, uri, data) {
-            const res = await fetch(uri, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            if (!res.ok) throw new Error('Error HTTP: ' + res.statusText);
-            return await res[fn]()
-        }
-        function forTable(data) {
-            return data.map(x =>
-                '<tr>' + x.map(y => '<td>' + y + '</td>').join('') + '</tr>'
-            ).join('');
-        }
-        async function listJournals(btn) {
-            const [form, data] = await getJson(btn, 'json', '/api/journals');
-            const html_data = data.map(x => '<option value="' + x + '">' + x + '</option>').join('');
-            form.querySelector('select[name="journal_name"]').innerHTML = html_data;
-        }
-        async function newEntryId(btn) {
-            const [form, data] = await getJson(btn, 'text', '/api/entry_id')
-            form.entry_id.value = data;
-        }
-        async function addRow(btn) {
-            const form = btn.closest('form');
-            const journal_name = form.journal_name.value;
-            const row = {
-                entry_id: form.entry_id.value,
-                account: form.account.value,
-                nature: parseInt(form.nature.value),
-                amount: parseFloat(form.amount.value)
-            };
-            form.row_id.value = await setJson('text', '/api/' + journal_name + '/row', row);
-        }
-        async function listRows(btn) {
-            const journal_name = btn.closest('form').journal_name.value;
-            const [_, data] = await getJson(btn, 'json', '/api/' + journal_name + '/rows');
-            document.querySelector('#view-rows>tbody').innerHTML = forTable(data);
-        }
-        async function listEntryId(btn) {
-            const form = btn.closest('form');
-            const journal_name = form.journal_name.value;
-            const entry_id = form.entry_id.value;
-            const [_, data] = await getJson(btn, 'json', '/api/' + journal_name + '/entry/' + entry_id);
-            document.querySelector('#view-rows>tbody').innerHTML = forTable(data);
-        }
-    </script>
+    <script src="/assets/main.js"></script>
 </body>
 
 </html>

@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS "Journal" (
     nature INTEGER NOT NULL CHECK(nature BETWEEN -1 AND 1), -- -1, 0, +1
     amount REAL NOT NULL CHECK(amount > 0), -- > 0
     -- Optional
-    entry_ref TEXT,
-    __data TEXT -- json data
+    entry_ref TEXT NOT NULL DEFAULT "",
+    __data TEXT NOT NULL DEFAULT "{}" -- json data
 );
 
 -- SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'Journal_%';

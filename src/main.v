@@ -4,7 +4,8 @@ import veb
 import db.sqlite
 
 pub struct App {
-mut:
+	veb.StaticHandler
+pub:
 	db sqlite.DB
 }
 
@@ -16,6 +17,7 @@ fn main() {
 	mut app := &App{
 		db: sqlite.connect('data/test.sqlite') or { panic(err) }
 	}
+	app.mount_static_folder_at('./assets', '/assets')!
 	veb.run_at[App, Context](mut app) or { panic(err) }
 }
 

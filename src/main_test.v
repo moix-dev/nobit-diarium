@@ -2,9 +2,12 @@ module main
 
 import db.sqlite
 
+const db = sqlite.connect('data/test.sqlite') or { panic(err) }
 const journal_period = 2025
 const journal_name = 'Journal_${journal_period}'
-const db = sqlite.connect('data/test.sqlite') or { panic(err) }
+const entry_id_size = 6 / 2
+const row_test_id = 1
+const row_test_ref = 'XYZ987'
 const row_test = Row{
 	entry_id: 'ABC123'
 	account:  '0+0.0'
@@ -13,13 +16,12 @@ const row_test = Row{
 }
 
 fn test_journal() {
-	assert create_journal(db, journal_period)
-	assert list_journals(db).len > 0
+	assert create_journal(db, journal_period) or { false }
+	assert list_journals(db) or { [] }.len > 0
 }
 
 fn test_entry() {
-	entry_id_size := 6
-	assert new_entry_id(db, entry_id_size) or { '' } != ''
+	assert new_entry_id(db, entry_id_size) or { '' }.len > 0
 }
 
 fn test_row() {
@@ -29,5 +31,11 @@ fn test_row() {
 }
 
 fn test_data() {
-	// assert set_data(db, entry_id)
+	assert set_ref(db, journal_name, row_test_id, row_test_ref) or { false }
+	assert set_data(db, journal_name, row_test_id, 'key', 'value') or { false }
+	assert get_data(db, journal_name, row_test_id, 'key') or { '' } == 'value'
+	data := list_data(db, journal_name, row_test_id) or { '{}' }
+	assert data != '{}'
+	assert parse_data(data) or { Data{} }['key'] == 'value'
+	assert del_data(db, journal_name, row_test_id, 'key') or { false }
 }
