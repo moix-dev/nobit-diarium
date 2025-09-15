@@ -62,3 +62,40 @@ async function setEntryRef(btn) {
     });
     if (res.ok) alert('Referencia actualizada');
 }
+async function listData(btn) {
+    const form = btn.closest('form');
+    const journal_name = form.journal_name.value;
+    const row_id = form.row_id.value;
+    const [_, data] = await getJson(btn, 'json', '/api/' + journal_name + '/data/' + row_id);
+    document.querySelector('#view-data>tbody').innerHTML = forTable(data);
+}
+async function getData(btn) {
+    const form = btn.closest('form');
+    const journal_name = form.journal_name.value;
+    const row_id = form.row_id.value;
+    const data_key = form.data_key.value;
+    const res = await fetch('/api/' + journal_name + '/key/' + row_id + '/' + data_key);
+    if (res.ok) form.data_value.value = await res.text();
+}
+async function delData(btn) {
+    const form = btn.closest('form');
+    const journal_name = form.journal_name.value;
+    const row_id = form.row_id.value;
+    const data_key = form.data_key.value;
+    const res = await fetch('/api/' + journal_name + '/key/' + row_id + '/' + data_key, {
+        method: 'DELETE'
+    });
+    if (res.ok) alert('Se ha eliminado');
+}
+async function setData(btn) {
+    const form = btn.closest('form');
+    const journal_name = form.journal_name.value;
+    const row_id = form.row_id.value;
+    const data_key = form.data_key.value;
+    const data_value = form.data_value.value;
+    const res = await fetch('/api/' + journal_name + '/key/' + row_id + '/' + data_key, {
+        method: 'POST',
+        body: data_value
+    });
+    if (res.ok) alert('Se guardado');
+}
